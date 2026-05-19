@@ -164,7 +164,7 @@ WHERE bio LIKE '%777%';
 ```
 
 결과:
-![](<IMAGE/Pasted image 20260518171129.png>)
+![](<images/03_mysql_optimizer_query_and_order_01_full_table_scan_explain.png>)
 확인할 것:
 
 - `type`이 `ALL`이면 풀 테이블 스캔이다.
@@ -203,7 +203,7 @@ EXPLAIN
 SELECT COUNT(*)
 FROM member;
 ```
-![](<IMAGE/<image/Pasted image 20260518171222.png>)
+![](<images/03_mysql_optimizer_query_and_order_02_full_index_scan_count_explain.png>)
 확인할 것:
 
 - `type`이 `index`이면 풀 인덱스 스캔이다.
@@ -219,7 +219,7 @@ FROM member;
 ```
 
   
-![](<image/Pasted image 20260518171235.png>)
+![](<images/03_mysql_optimizer_query_and_order_03_full_table_scan_select_all_explain.png>)
 ### 병렬 처리
 
   
@@ -292,7 +292,7 @@ ORDER BY age, joined_at
 LIMIT 10;
 ```
 
-![](<image/Pasted image 20260518171322.png>)
+![](<images/03_mysql_optimizer_query_and_order_04_index_order_by_explain.png>)
 확인할 것:
 
 - `key`가 `idx_member_age_joined_at`인지 확인한다.
@@ -379,7 +379,7 @@ ORDER BY first_name
 
 다음과 같은 SQL을 실행한다고 할 때, 싱글 패스 정렬은 다음처럼 진행한다.
 
-![](<image/Pasted image 20260518142811.png>)
+![](<images/03_mysql_optimizer_query_and_order_05_single_pass_sort_algorithm.png>)
 정렬은 FIRST_NAME으로 하는 것이지만, last_name까지 같이 조회해서 소트 버퍼에 담는다.
 
 테이블을 다시 읽을 필요가 없다는 장점이 있다. 다만 소트 버퍼에 더 많은 데이터를 담아야 하므로 메모리 공간을 더 많이 사용한다.
@@ -392,7 +392,7 @@ ORDER BY first_name
 
 ### 투 패스 정렬
 
-  ![](<IMAGE/Pasted image 20260518142900.png>)
+  ![](<images/03_mysql_optimizer_query_and_order_06_two_pass_sort_algorithm.png>)
 
 투 패스 정렬은 정렬 기준 컬럼과 레코드를 식별할 수 있는 정보만 소트 버퍼에 담아 정렬하는 방식이다.
 
@@ -578,7 +578,7 @@ LIMIT 10;
 ```
 
 확인할 것:
-![](<IMAGE/Pasted image 20260518172652.png>)
+![](<images/03_mysql_optimizer_query_and_order_07_index_sort_explain.png>)
 
 - `key`가 `idx_member_age_joined_at`인지 확인한다.
 - `Extra`에 `Using filesort`가 없으면 인덱스를 사용한 정렬이다.
@@ -665,7 +665,7 @@ LIMIT 10;
 ```
 
 확인할 것:
-![](<IMAGE/Pasted image 20260518173015.png>)
+![](<images/03_mysql_optimizer_query_and_order_08_driving_table_filesort_explain.png>)
 
 - `Extra`에 `Using filesort`가 표시될 수 있다.
 - `Using temporary`가 없다면 조인 결과 전체를 임시 테이블에 담아 정렬하는 방식은 아니다.
@@ -793,7 +793,7 @@ LIMIT 10;
 
 SHOW SESSION STATUS LIKE 'Sort%';
 ```
-![alt text](<image/Pasted image 20260518173147.png>)
+![alt text](<images/03_mysql_optimizer_query_and_order_09_sort_status_filesort_rows.png>)
 `Sort_rows`가 증가했다면 실제 정렬 대상 레코드가 있었다는 뜻이다. `Sort_merge_passes`가 증가했다면 소트 버퍼만으로 정렬을 끝내지 못하고 디스크 임시 파일 병합까지 발생했다는 뜻이므로, 정렬 비용이 커졌다고 볼 수 있다.
 
 반대로 인덱스를 이용한 정렬은 이미 정렬된 인덱스를 순서대로 읽기만 하므로, Filesort 관련 상태 변수 증가가 없거나 훨씬 적을 수 있다.
@@ -888,7 +888,7 @@ GROUP BY region, age;
 ```
 
 확인할 것:
-![](<IMAGE/Pasted image 20260518173235.png>)
+![](<images/03_mysql_optimizer_query_and_order_10_group_by_index_scan_explain.png>)
 
 - `key`가 `idx_member_region_age`인지 확인한다.
 - `Extra`에 `Using temporary`가 없다면 임시 테이블 없이 그룹핑한 것이다.
@@ -933,7 +933,7 @@ GROUP BY emp_no;
 ```
 
 실행 계획의 `Extra`에 다음과 비슷한 메시지가 표시될 수 있다.
-![](<IMAGE/Pasted image 20260518173323.png>)
+![](<images/03_mysql_optimizer_query_and_order_11_loose_index_scan_employees_explain.png>)
 
 ```text
 Using where; Using index for group-by
@@ -995,7 +995,7 @@ FROM tb_test
 GROUP BY col1, col2;
 ```
 
-![](<IMAGE/Pasted image 20260518173450.png>)
+![](<images/03_mysql_optimizer_query_and_order_12_loose_index_scan_group_by_example.png>)
 `DISTINCT`도 내부적으로는 중복 제거가 필요하므로, 인덱스 순서와 맞으면 비슷한 방식으로 처리될 수 있다.
 
 ```sql
@@ -1077,7 +1077,7 @@ GROUP BY member_id;
 ```
 
 확인할 것:
-![](<IMAGE/Pasted image 20260518173552.png>)
+![](<images/03_mysql_optimizer_query_and_order_13_loose_index_scan_min_explain.png>)
 
 - `idx_reservation_member_time (member_id, reservation_time)` 인덱스를 사용할 수 있다.
 - `Extra`에 `Using index for group-by`가 표시될 수 있다.
@@ -1119,7 +1119,7 @@ GROUP BY status, theme_id;
 
 - `Extra`에 `Using temporary`가 표시될 수 있다.
 
-  ![](<IMAGE/Pasted image 20260518173655.png>)
+  ![](<images/03_mysql_optimizer_query_and_order_14_temporary_table_group_by_explain.png>)
 
 MySQL 8.0부터는 `GROUP BY` 컬럼 기준으로 묵시적 정렬을 수행하지 않는다. 정렬이 필요하다면 `ORDER BY`를 명시해야 한다.
 
@@ -1176,7 +1176,7 @@ EXPLAIN
 SELECT DISTINCT region
 FROM member;
 ```
-![](<IMAGE/Pasted image 20260518173727.png>)
+![](<images/03_mysql_optimizer_query_and_order_15_distinct_region_explain.png>)
 ```sql
 EXPLAIN
 SELECT region
@@ -1185,7 +1185,7 @@ GROUP BY region;
 ```
 
   
-![](<IMAGE/Pasted image 20260518173756.png>)
+![](<images/03_mysql_optimizer_query_and_order_16_group_by_region_explain.png>)
 
 똑같다다
 
@@ -1266,7 +1266,7 @@ SELECT COUNT(DISTINCT region)
 FROM member;
 ```
 
-  ![](<IMAGE/Pasted image 20260518173854.png>)
+  ![](<images/03_mysql_optimizer_query_and_order_17_count_distinct_region_explain.png>)
 
 만약 서로 다른 컬럼에 대해 각각 `COUNT(DISTINCT ...)`를 수행한다면, 필요한 임시 테이블도 각각 생성될 수 있다.
 
