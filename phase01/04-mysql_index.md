@@ -113,9 +113,9 @@ GROUP BY region, age;
 DROP TABLE member_group_by_index_scan_lab;
 ```
 
-확인할 것:
-![](<images/03_mysql_optimizer_query_and_order_10_group_by_index_scan_explain.png>)
+![](images/03_mysql_optimizer_query_and_order_10_group_by_index_scan_explain.png)
 
+확인할 것:
 - `key`가 `idx_member_group_by_region_age`인지 확인한다.
 - `Extra`에 `Using temporary`가 없다면 임시 테이블 없이 그룹핑한 것이다.
 - `Extra`에 `Using index`가 보이면 커버링 인덱스로 처리했다는 뜻이다. 인덱스 스캔 `GROUP BY`의 필수 표시값은 아니다.
