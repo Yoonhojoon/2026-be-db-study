@@ -8,7 +8,7 @@
 
 - **옵티마이저 종류**
   - 비용 기반 최적화(CBO)는 여러 실행 방법의 비용을 계산하고 가장 저렴한 계획을 수립하는 방식이다.
-  - **규칙 기반 최적화(RBO)는 옵티마이저에 내장된 우선순위 규칙에 따라 실행 계획을 수립하는 방식이다.
+  - 규칙 기반 최적화(RBO)는 옵티마이저에 내장된 우선순위 규칙에 따라 실행 계획을 수립하는 방식이다.
 
 - **테이블 읽기 방식**
   - `type = ALL`: **풀 테이블 스캔**. 테이블 레코드를 직접 훑는다.
@@ -157,8 +157,6 @@ GROUP BY emp_no;
 ```
 
 실행 계획의 `Extra`에 다음과 비슷한 메시지가 표시될 수 있다.
-![](images/03_mysql_optimizer_query_and_order_11_loose_index_scan_employees_explain.png)
-
 ```text
 Using where; Using index for group-by
 ```
